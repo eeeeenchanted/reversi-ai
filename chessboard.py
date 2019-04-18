@@ -20,24 +20,24 @@ class ChessBoard(Canvas):
         for i in range(row):
             for j in range(col):
                 if board.mtx[i][j] is not None:
-                    color = None
                     if board.mtx[i][j] == black:
                         color = 'black'
                     elif board.mtx[i][j] == white:
                         color = 'white'
+                    else:
+                        pass
                     self.create_oval(first_chess_x + box_width * i - chess_radius,
-                                     first_chess_y + box_height * i - chess_radius,
+                                     first_chess_y + box_height * j - chess_radius,
                                      first_chess_x + box_width * i + chess_radius,
-                                     first_chess_y + box_height * i + chess_radius,
+                                     first_chess_y + box_height * j + chess_radius,
                                      fill=color)
 
-        for pos in board.valid_list:
-            self.create_oval(first_chess_x + box_width * pos[0] - next_radius,
-                             first_chess_y + box_height * pos[1] - next_radius,
-                             first_chess_x + box_width * pos[0] + next_radius,
-                             first_chess_y + box_height * pos[1] + next_radius,
+        for poses in board.valid_list:
+            self.create_oval(first_chess_x + box_width * poses[0] - next_radius,
+                             first_chess_y + box_height * poses[1] - next_radius,
+                             first_chess_x + box_width * poses[0] + next_radius,
+                             first_chess_y + box_height * poses[1] + next_radius,
                              fill=next_color)
 
         self.update()
-
 

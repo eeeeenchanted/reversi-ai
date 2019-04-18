@@ -8,11 +8,10 @@ class State(Enum):
     finished = 3
     start = 4
 
-
 state = State.start
 human_color = 0
 AI_color = 1
-
+parameter = "player_first"
 row = 8
 col = 8
 black = 0

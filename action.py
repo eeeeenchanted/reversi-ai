@@ -4,31 +4,27 @@ from rule import *
 from game import *
 from tkinter import messagebox
 from time import *
+import pickle
 
 
 class Action:
-    def __init__(self, root, canvas, start_game, board):
+    def __init__(self, root, canvas, start_game):
         self.root = root
         self.canvas = canvas
         self.start_game = start_game
-        self.board = board
-        self.tree = MCTreeSearch(self.board, black)
         self.total_time = 0
+
+    def on_click(self, event):
+        if config.state == State.human:
+            print(event)
+            self.human_play(event)
+            self.ai_play()
+        pass
 
     @staticmethod
     def get_pos(event):
         # print((event.x - left_up_x) // box_width, (event.y - left_up_y) // box_height)
         return (event.x - left_up_x) // box_width, (event.y - left_up_y) // box_height
-
-    def on_click(self, event):
-        if state == State.human:
-            # print(event)
-            if event.x <= 50 and event.y <= 50:
-                self.start_game(self, human_color, self.canvas)
-            else:
-                self.human_play(event)
-                self.ai_play()
-        pass
 
     def human_play(self, event):
         x, y = self.get_pos(event)
@@ -36,17 +32,22 @@ class Action:
         valid_list = get_valid_list(self.board.mtx, human_color)
         if len(valid_list) != 0:
             if (x, y) not in valid_list:
+                print(x,y,"can't click here")
                 return
-            self.board = move(self.board, x, y, human_color)
+            print(x, y)
+            move(self.board, x, y, human_color)                    #reconsider
             self.board.valid_list = []
             self.canvas.draw(self.board)
         else:
             print("no valid place, player pass")
             if self.board.is_full():
                 self.finish()
+                return
         self.switch_player((x, y))
 
     def ai_play(self):
+        if config.state == State.human:
+            return
         valid_list = get_valid_list(self.board.mtx, AI_color)
         (x, y) = (None, None)
         if len(valid_list) != 0:
@@ -54,16 +55,23 @@ class Action:
             (x, y) = self.tree.uct_search()
             end = time()
             print('Single step time: ', end - begin)
+            self.total_time=self.total_time+end - begin
             self.board = move(self.board, x, y, AI_color)
+            passAI = FALSE
         else:
             print("no valid place, AI pass")
+            passAI=TRUE
             if self.board.is_full():
                 self.finish()
+                return
         self.board.valid_list = get_valid_list(self.board.mtx, human_color)
         self.canvas.draw(self.board)
         if len(self.board.valid_list) == 0:
             print("no valid place, player pass")
-            self.tree.update_tree(self.board, AI_color, (x, y), force=True)
+            if passAI:
+                self.finish()
+                return
+            self.tree.update_tree(self.board, AI_color, (x, y), force=True)         #?
             self.ai_play()
         else:
             self.switch_player((x, y))
@@ -82,7 +90,11 @@ class Action:
         else:
             winner = 'AI'
         messagebox.showinfo("game over", winner + "win")
-        pass
+        config.state=State.finished
+        print('total time', self.total_time)
+
+
+
 
     def switch_player(self, pos):
         if config.state == State.human:
@@ -94,4 +106,33 @@ class Action:
         if pos[0] is not None and pos[1] is not None:
             self.tree.update_tree(self.board, color, pos)
 
+    def build_board(self, board, player):
+        self.board = board
+        self.tree = self.build_tree(player)
+        print(self.tree)
 
+    def build_tree(self, player):
+        if player == 0:
+            config.parameter = 'player_first'
+        else:
+            config.parameter = 'AI_first'
+        try:
+            tree = self.read(config.parameter+'1')
+            while tree.root.parent is not None:
+                tree.root = tree.root.parent
+        except FileNotFoundError:
+            self.write(config.parameter)
+            tree = self.read(config.parameter)
+            return tree
+
+    @staticmethod
+    def read(filename):
+        with open(filename, 'rb') as f:
+            aa = pickle.load(f)
+            return aa
+
+    def write(self, filename, t=None):
+        with open(filename, 'wb') as f:
+            if t is None:
+                t = MCTreeSearch(self.board, black)
+            pickle.dump(t, f)
