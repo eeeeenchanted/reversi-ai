@@ -40,5 +40,13 @@ class ChessBoard(Canvas):
                              first_chess_y + box_height * poses[1] + next_radius,
                              fill=next_color)
 
+        # print(board.last_move)
+        if board.last_move[0] is not None and board.last_move[1] is not None:
+            self.create_oval(first_chess_x + box_width * board.last_move[0] - last_move_radius,
+                         first_chess_y + box_height * board.last_move[1] - last_move_radius,
+                         first_chess_x + box_width * board.last_move[0] + last_move_radius,
+                         first_chess_y + box_height * board.last_move[1] + last_move_radius,
+                         fill=last_move_color)
+
         self.update()
 

@@ -2,7 +2,7 @@
 from random import choice
 from node import *
 from math import log, sqrt, fabs
-from config import *
+import config
 from rule import *
 from datetime import *
 from copy import deepcopy
@@ -49,7 +49,7 @@ class MCTreeSearch:
         moves = 0
         while moves + self.moves < 64:
             if moves + self.moves < 56:
-                valid_list = get_priority_valid_list(board.mtx, roxanne_table, now_color)
+                valid_list = get_priority_valid_list(board.mtx, config.roxanne_table, now_color)
                 if len(valid_list) == 0:  # pass
                     moves += 1  # 为啥要+1?
                     now_color = 1 - now_color
@@ -94,7 +94,7 @@ class MCTreeSearch:
                 break
 
     def multi_simulation(self, node):
-        self.time_limit = timedelta(seconds=min(single_time_limit, 62 - fabs(34 - self.moves) * 2))  # ???
+        self.time_limit = timedelta(seconds=min(config.single_time_limit, 62 - fabs(34 - self.moves) * 2))  # ???
         while datetime.utcnow() - self.start_time < self.time_limit:
             v = self.tree_policy(node)
             reward = self.default_policy(v)
@@ -110,6 +110,7 @@ class MCTreeSearch:
         pool.join()
 
     def update_tree(self, board, color, last_move, force=False):  # force: player pass之后ai选择
+        # print(last_move)
         flag = False  # explored or not
         for child in self.root.children:
             if child.last_move == last_move:

@@ -39,6 +39,7 @@ class Action:
             print(x, y)
             move(self.board, x, y, config.human_color)  # reconsider
             self.board.valid_list = []
+            self.board.last_move = [x, y]
             self.canvas.draw(self.board)
         else:
             print("no valid place, player pass")
@@ -68,6 +69,7 @@ class Action:
                 self.finish()
                 return
         self.board.valid_list = get_valid_list(self.board.mtx, config.human_color)
+        self.board.last_move = [x, y]
         self.canvas.draw(self.board)
         if len(self.board.valid_list) == 0:
             print("no valid place, player pass")
