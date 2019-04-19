@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-from copy import deepcopy
 from random import choice
 from node import *
 from math import log, sqrt, fabs
 from config import *
 from rule import *
 from datetime import *
+from copy import deepcopy
+from multiprocessing.dummy import Pool
 
 
 class MCTreeSearch:
@@ -35,8 +36,9 @@ class MCTreeSearch:
 
     @staticmethod
     def best_child(node, c):
-        child_ucb = [child.q / child.n + c * sqrt(log(node.n) / child.n) for child in node.children]  # 要用1-???
+        child_ucb = [1 - child.q / child.n + c * sqrt(log(node.n) / child.n) for child in node.children]  # 要用1-???
         max_ucb = max(child_ucb)
+        # print(max_ucb)
         index = child_ucb.index(max_ucb)
         return max_ucb, node.children[index]
 
@@ -76,7 +78,7 @@ class MCTreeSearch:
 
     def uct_search(self):
         self.start_time = datetime.utcnow()
-        self.simulation(self.root)
+        self.multi_simulation(self.root)
         if len(self.root.children) == 0:
             return None
         win_percent, next_step = self.best_child(self.root, 0)  # ??为啥是0
@@ -90,6 +92,22 @@ class MCTreeSearch:
             self.backup(v, reward)
             if node.is_fully_expanded():
                 break
+
+    def multi_simulation(self, node):
+        self.time_limit = timedelta(seconds=min(single_time_limit, 62 - fabs(34 - self.moves) * 2))  # ???
+        while datetime.utcnow() - self.start_time < self.time_limit:
+            v = self.tree_policy(node)
+            reward = self.default_policy(v)
+            self.backup(v, reward)
+            if node.is_fully_expanded():
+                break
+        if len(node.children) == 0:
+            return
+
+        pool = Pool(len(node.children))
+        pool.map(self.simulation, node.children)
+        pool.close()
+        pool.join()
 
     def update_tree(self, board, color, last_move, force=False):  # force: player pass之后ai选择
         flag = False  # explored or not

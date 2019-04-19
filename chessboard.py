@@ -20,6 +20,7 @@ class ChessBoard(Canvas):
         for i in range(row):
             for j in range(col):
                 if board.mtx[i][j] is not None:
+                    color = ''
                     if board.mtx[i][j] == black:
                         color = 'black'
                     elif board.mtx[i][j] == white:

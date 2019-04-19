@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from tkinter import *
 from game import *
+from tkinter import *
 
 
 if __name__ == "__main__":

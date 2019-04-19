@@ -8,6 +8,7 @@ class State(Enum):
     finished = 3
     start = 4
 
+
 state = State.start
 human_color = 0
 AI_color = 1
@@ -19,7 +20,7 @@ white = 1
 box_width = 50
 box_height = 50
 chess_radius = 22
-next_radius = 15
+next_radius = 10
 next_color = "#BDC0BA"
 left_up_x = 50
 left_up_y = 50
