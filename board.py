@@ -16,6 +16,7 @@ class Board:
         self.mtx[3][4] = black
         self.mtx[4][3] = black
         self.cnt = 4
+        self.last_move = [None, None]
 
     def is_full(self):
         for i in range(row):
