@@ -97,6 +97,7 @@ class Action:
         messagebox.showinfo("game over", winner + " win")
         config.state = State.finished
         print('total time', self.total_time)
+        self.write(config.parameter, self.tree)  # save tree structure into file
 
     def switch_player(self, pos):
         if config.state == State.human:
@@ -119,13 +120,17 @@ class Action:
         else:
             config.parameter = 'AI_first'
         try:
-            tree = self.read(config.parameter+'1')
+            tree = self.read(config.parameter)  # read previous trained tree
+            print("tree found")
+            print(tree)
             while tree.root.parent is not None:
                 tree.root = tree.root.parent
         except FileNotFoundError:
             self.write(config.parameter)
             tree = self.read(config.parameter)
-            return tree
+            print("tree not found")
+            print(tree)
+        return tree
 
     @staticmethod
     def read(filename):
