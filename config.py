@@ -7,8 +7,7 @@ class State(Enum):
     AI = 2
     finished = 3
     start = 4
-
-
+count=0
 state = State.start
 human_color = 0
 AI_color = 1

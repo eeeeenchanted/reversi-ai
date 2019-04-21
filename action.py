@@ -4,6 +4,7 @@ from game import *
 from tkinter import messagebox
 from time import *
 import pickle
+from chessboard import *
 from config import *
 from rule import *
 
@@ -20,6 +21,12 @@ class Action:
         if config.state == State.human:
             print(event)
             self.human_play(event)
+            self.ai_play()
+        pass
+
+    def autoplay(self):
+        if config.state == State.human:
+            self.ai_play_2()
             self.ai_play()
         pass
 
@@ -80,6 +87,28 @@ class Action:
             self.ai_play()
         else:
             self.switch_player((x, y))
+        self.autoplay()
+
+    def ai_play_2(self):
+        # print(config.AI_color)
+        valid_list = get_valid_list(self.board.mtx, config.human_color)
+        (x, y) = (None, None)
+        if len(valid_list) != 0:
+            #begin = time()
+            (x, y) = self.tree.uct_search()
+            #end = time()
+            #print('Single step time: ', end - begin)
+            #self.total_time = self.total_time+end - begin
+            self.board = move(self.board, x, y, config.human_color)
+            self.board.valid_list = []
+            self.board.last_move = [x, y]
+            self.canvas.draw(self.board)
+        else:
+            #print("no valid place, AI2 pass")
+            if self.board.is_full():
+                self.finish()
+                return
+        self.switch_player((x, y))
 
     def finish(self):
         human = 0
@@ -95,9 +124,11 @@ class Action:
         else:
             winner = 'AI'
         messagebox.showinfo("game over", winner + " win")
+        config.count = config.count+1
         config.state = State.finished
         print('total time', self.total_time)
         self.write(config.parameter, self.tree)  # save tree structure into file
+        #self.start_game(self.action, 1, self.chessboard)
 
     def switch_player(self, pos):
         if config.state == State.human:
@@ -121,21 +152,19 @@ class Action:
             config.parameter = 'AI_first'
         try:
             tree = self.read(config.parameter)  # read previous trained tree
-            print("tree found")
-            print(tree)
             while tree.root.parent is not None:
                 tree.root = tree.root.parent
+                print(tree.root)
         except FileNotFoundError:
             self.write(config.parameter)
             tree = self.read(config.parameter)
-            print("tree not found")
-            print(tree)
         return tree
 
     @staticmethod
     def read(filename):
         with open(filename, 'rb') as f:
             aa = pickle.load(f)
+            print(aa)
             return aa
 
     def write(self, filename, t=None):
