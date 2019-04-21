@@ -56,11 +56,15 @@ def init_game(root, player):
 
 
 def start_game_auto(action_auto, player):
+    print(player)
     board = Board()
     action_auto.build_board(board, player)
     if player == 0:
         config.state = config.State.human
-        board.valid_list = get_valid_list(board.mtx, config.black)
+        config.human_color = config.white
+        config.AI_color = config.black
+        board.valid_list.clear()
+        action_auto.autoplay()
     elif player == 1:
         config.state = config.State.AI
         config.human_color = config.white

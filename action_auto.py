@@ -123,8 +123,11 @@ class Action_auto:
         config.count = config.count+1
         config.state = State.finished
         print('total time', self.total_time)
+        while self.tree.root.parent is not None:
+            self.tree.root = self.tree.root.parent
         self.write(config.parameter, self.tree)  # save tree structure into file
-        self.start_game(self, 1)
+        config.player_now = 1-config.player_now
+        self.start_game(self, config.player_now)
 
     def switch_player(self, pos):
         if config.state == State.human:

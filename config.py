@@ -13,6 +13,7 @@ human_color = 0
 AI_color = 1
 parameter = "player_first"
 row = 8
+player_now=0
 col = 8
 black = 0
 white = 1
