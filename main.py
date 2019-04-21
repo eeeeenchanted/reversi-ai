@@ -4,6 +4,7 @@ from tkinter import *
 
 
 if __name__ == "__main__":
+    '''
     root = Tk()
     title = Label(root, text='Reversi', font=('Arial', 30), width=20, height=3)
     title.pack()
@@ -14,3 +15,5 @@ if __name__ == "__main__":
     root.wm_title("Reversi")
     root.wm_geometry('400x300')
     root.mainloop()
+    '''
+    init_game_auto(1)

@@ -87,7 +87,6 @@ class Action:
             self.ai_play()
         else:
             self.switch_player((x, y))
-        self.autoplay()
 
     def ai_play_2(self):
         # print(config.AI_color)
@@ -128,7 +127,7 @@ class Action:
         config.state = State.finished
         print('total time', self.total_time)
         self.write(config.parameter, self.tree)  # save tree structure into file
-        #self.start_game(self.action, 1, self.chessboard)
+        #game.start_game(self.action, 1, self.chessboard)
 
     def switch_player(self, pos):
         if config.state == State.human:
@@ -142,8 +141,11 @@ class Action:
 
     def build_board(self, board, player):
         self.board = board
-        self.tree = self.build_tree(player)
-        print(self.tree)
+        if self.tree != None:
+            while self.tree.root.parent is not None:
+                self.tree.root = self.tree.root.parent
+        else:
+            self.tree = self.build_tree(player)
 
     def build_tree(self, player):
         if player == 0:
