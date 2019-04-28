@@ -89,7 +89,10 @@ class Action_auto:
     def ai_play_2(self):
         # print(config.AI_color)
         valid_list = get_valid_list(self.board.mtx, config.human_color)
+        self.tree.root.valid_list = get_valid_list(self.tree.root.board.mtx, config.human_color)
         (x, y) = (None, None)
+        # print("valid list")
+        # print(len(valid_list))
         if len(valid_list) != 0:
             #begin = time()
             (x, y) = self.tree.uct_search()
@@ -119,15 +122,16 @@ class Action_auto:
             winner = 'human'
         else:
             winner = 'AI'
-        messagebox.showinfo("game over", winner + " win")
+        # messagebox.showinfo("game over", winner + " win")
         config.count = config.count+1
         config.state = State.finished
         print('total time', self.total_time)
         while self.tree.root.parent is not None:
             self.tree.root = self.tree.root.parent
         self.write(config.parameter, self.tree)  # save tree structure into file
-        config.player_now = 1-config.player_now
+        # config.player_now = 1-config.player_now
         self.start_game(self, config.player_now)
+        print(config.count)
 
     def switch_player(self, pos):
         if config.state == State.human:
@@ -141,7 +145,7 @@ class Action_auto:
 
     def build_board(self, board, player):
         self.board = board
-        if self.tree != None:
+        if self.tree is not None:
             while self.tree.root.parent is not None:
                 self.tree.root = self.tree.root.parent
         else:

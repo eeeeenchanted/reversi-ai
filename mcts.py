@@ -36,6 +36,8 @@ class MCTreeSearch:
 
     @staticmethod
     def best_child(node, c):
+        # print("children")
+        # print(len(node.children))
         child_ucb = [1 - child.q / child.n + c * sqrt(log(node.n) / child.n) for child in node.children]  # 要用1-???
         max_ucb = max(child_ucb)
         # print(max_ucb)
@@ -91,7 +93,7 @@ class MCTreeSearch:
             reward = self.default_policy(v)
             self.backup(v, reward)
             if node.is_fully_expanded():
-                break
+                return
 
     def multi_simulation(self, node):
         self.time_limit = timedelta(seconds=min(config.single_time_limit, 62 - fabs(34 - self.moves) * 2))  # ???

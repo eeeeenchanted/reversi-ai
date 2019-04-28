@@ -24,11 +24,11 @@ class Action:
             self.ai_play()
         pass
 
-    def autoplay(self):
-        if config.state == State.human:
-            self.ai_play_2()
-            self.ai_play()
-        pass
+    # def autoplay(self):
+    #     if config.state == State.human:
+    #         self.ai_play_2()
+    #         self.ai_play()
+    #     pass
 
     @staticmethod
     def get_pos(event):
@@ -87,7 +87,7 @@ class Action:
             self.ai_play()
         else:
             self.switch_player((x, y))
-
+    '''
     def ai_play_2(self):
         # print(config.AI_color)
         valid_list = get_valid_list(self.board.mtx, config.human_color)
@@ -108,7 +108,7 @@ class Action:
                 self.finish()
                 return
         self.switch_player((x, y))
-
+    '''
     def finish(self):
         human = 0
         ai = 0
@@ -123,11 +123,10 @@ class Action:
         else:
             winner = 'AI'
         messagebox.showinfo("game over", winner + " win")
-        config.count = config.count+1
+        # config.count = config.count+1
         config.state = State.finished
         print('total time', self.total_time)
         self.write(config.parameter, self.tree)  # save tree structure into file
-        #game.start_game(self.action, 1, self.chessboard)
 
     def switch_player(self, pos):
         if config.state == State.human:

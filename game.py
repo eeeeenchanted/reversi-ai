@@ -26,6 +26,35 @@ def init_game_auto(player):
     start_game_auto(action_auto, player)
 
 
+def start_game_auto(action_auto, player):
+    print(player)
+    board = Board()
+    action_auto.build_board(board, player)
+    if player == 0:
+        config.state = config.State.human
+        config.human_color = config.white
+        config.AI_color = config.black
+        board.valid_list.clear()
+        action_auto.autoplay()
+    elif player == 1:
+        config.state = config.State.AI
+        config.human_color = config.white
+        config.AI_color = config.black
+        board.valid_list.clear()
+        action_auto.ai_play()
+
+
+def init_game(root, player):
+    root.destroy()
+    root = Tk()
+    chessboard = ChessBoard(root, width=config.frame_width, height=config.frame_height, background='#91989F')
+    action = Action(root, chessboard)
+    start_game(action, player, chessboard)
+    root.focus_set()  # 获得鼠标焦点
+    root.wm_title("Reversi")
+    root.mainloop()
+
+
 def start_game(action, player, chessboard):
     board = Board()
     action.build_board(board, player)
@@ -44,30 +73,3 @@ def start_game(action, player, chessboard):
     chessboard.draw(board)
 
 
-def init_game(root, player):
-    root.destroy()
-    root = Tk()
-    chessboard = ChessBoard(root, width=config.frame_width, height=config.frame_height, background='#91989F')
-    action = Action(root, chessboard)
-    start_game(action, player, chessboard)
-    root.focus_set()  # 获得鼠标焦点
-    root.wm_title("Reversi")
-    root.mainloop()
-
-
-def start_game_auto(action_auto, player):
-    print(player)
-    board = Board()
-    action_auto.build_board(board, player)
-    if player == 0:
-        config.state = config.State.human
-        config.human_color = config.white
-        config.AI_color = config.black
-        board.valid_list.clear()
-        action_auto.autoplay()
-    elif player == 1:
-        config.state = config.State.AI
-        config.human_color = config.white
-        config.AI_color = config.black
-        board.valid_list.clear()
-        action_auto.ai_play()
