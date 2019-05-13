@@ -9,6 +9,7 @@ from copy import deepcopy
 from multiprocessing.dummy import Pool
 
 
+# 实现蒙特卡洛树搜索
 class MCTreeSearch:
     def __init__(self, board, color, **kwargs):
         self.color = color
@@ -36,9 +37,8 @@ class MCTreeSearch:
 
     @staticmethod
     def best_child(node, c):
-        # print("children")
         # print(len(node.children))
-        child_ucb = [1 - child.q / child.n + c * sqrt(log(node.n) / child.n) for child in node.children]  # 要用1-???
+        child_ucb = [1 - child.q / child.n + c * sqrt(log(node.n) / child.n) for child in node.children]
         max_ucb = max(child_ucb)
         # print(max_ucb)
         index = child_ucb.index(max_ucb)
@@ -51,24 +51,26 @@ class MCTreeSearch:
         moves = 0
         while moves + self.moves < 64:
             if moves + self.moves < 56:
+                # 使用优先级表
                 valid_list = get_priority_valid_list(board.mtx, config.roxanne_table, now_color)
-                if len(valid_list) == 0:  # pass
-                    moves += 1  # 为啥要+1?
+                if len(valid_list) == 0:
+                    moves += 1
                     now_color = 1 - now_color
                     continue
                 (x, y) = choice(valid_list)
             else:
                 valid_list = get_valid_list(board.mtx, now_color)
                 if len(valid_list) == 0:  # pass
-                    moves += 1  # 为啥要+1?
+                    moves += 1
                     now_color = 1 - now_color
                     continue
                 (x, y) = choice(valid_list)
-            board = move(board, x, y, now_color)  # simulation不用deepcopy
+            board = move(board, x, y, now_color)
             now_color = 1 - now_color
             moves += 1
-        return count_score(board.mtx, self.color) > 0
+        return count_score(board.mtx, self.color) > 0  # 返回仿真结果
 
+    # back propagation
     def backup(self, node, reward):
         while node is not None:
             node.n += 1
@@ -83,11 +85,11 @@ class MCTreeSearch:
         self.multi_simulation(self.root)
         if len(self.root.children) == 0:
             return None
-        win_percent, next_step = self.best_child(self.root, 0)  # ??为啥是0
+        win_percent, next_step = self.best_child(self.root, 0)
         print("winning percentage: ", win_percent)
         return next_step.last_move
 
-    def simulation(self, node):  # 多线程？
+    def simulation(self, node):
         while datetime.utcnow() - self.start_time < self.time_limit:
             v = self.tree_policy(node)
             reward = self.default_policy(v)
@@ -95,8 +97,9 @@ class MCTreeSearch:
             if node.is_fully_expanded():
                 return
 
+    # 多线程实现多次仿真同时进行
     def multi_simulation(self, node):
-        self.time_limit = timedelta(seconds=min(config.single_time_limit, 62 - fabs(34 - self.moves) * 2))  # ???
+        self.time_limit = timedelta(seconds=min(config.single_time_limit, 62 - fabs(34 - self.moves) * 2))
         while datetime.utcnow() - self.start_time < self.time_limit:
             v = self.tree_policy(node)
             reward = self.default_policy(v)
@@ -111,7 +114,8 @@ class MCTreeSearch:
         pool.close()
         pool.join()
 
-    def update_tree(self, board, color, last_move, force=False):  # force: player pass之后ai选择
+    # 更新树结构
+    def update_tree(self, board, color, last_move, force=False):
         # print(last_move)
         flag = False  # explored or not
         for child in self.root.children:

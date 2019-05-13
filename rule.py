@@ -2,6 +2,7 @@
 from copy import deepcopy
 
 
+# 判断该位置是否是合法位置
 def is_valid(mtx, x, y, color):
     if mtx[x][y] is not None:
         return False
@@ -64,6 +65,7 @@ def is_valid(mtx, x, y, color):
     return False
 
 
+# 翻转
 def reverse(mtx, x, y, color):
     # right direction has reverse color
     if x < 6 and mtx[x+1][y] == 1-color:
@@ -140,6 +142,7 @@ def reverse(mtx, x, y, color):
     pass
 
 
+# 获取合法位置链表
 def get_valid_list(mtx, color):
     valid_list = []
     for i in range(8):
@@ -149,6 +152,7 @@ def get_valid_list(mtx, color):
     return valid_list
 
 
+# 获取优先级最高的位置
 def get_priority_valid_list(mtx, table, color=1):
     valid_list = []
     for pos in table:
@@ -160,6 +164,7 @@ def get_priority_valid_list(mtx, table, color=1):
     return valid_list
 
 
+# 落子并翻转
 def move(board, x, y, color, copy=False):
     if copy:
         new_board = deepcopy(board)  # deepcopy生成一个全新的独立的board

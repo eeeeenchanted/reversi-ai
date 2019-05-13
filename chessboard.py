@@ -3,11 +3,13 @@ from tkinter import *
 from config import *
 
 
+# 绘制棋盘
 class ChessBoard(Canvas):
     def __init__(self, master=None, cnf={}, **kw):
         super().__init__(master, cnf, **kw)
 
     def draw(self, board):
+        # 绘制空白棋盘
         self.create_rectangle(left_up_x, left_up_y,
                               right_down_x, right_down_y,
                               fill=bg_color, outline=line_color)
@@ -17,6 +19,7 @@ class ChessBoard(Canvas):
             self.create_line(left_up_x, delta, right_down_x, delta, fill=line_color)
             self.create_line(delta, left_up_y, delta, right_down_y, fill=line_color)
 
+        # 根据棋盘上落子情况绘制棋子
         for i in range(row):
             for j in range(col):
                 if board.mtx[i][j] is not None:
@@ -33,6 +36,7 @@ class ChessBoard(Canvas):
                                      first_chess_y + box_height * j + chess_radius,
                                      fill=color)
 
+        # 绘制当前合法位置
         for poses in board.valid_list:
             self.create_oval(first_chess_x + box_width * poses[0] - next_radius,
                              first_chess_y + box_height * poses[1] - next_radius,
@@ -40,13 +44,13 @@ class ChessBoard(Canvas):
                              first_chess_y + box_height * poses[1] + next_radius,
                              fill=next_color)
 
-        # print(board.last_move)
+        # 绘制上一步走子位置
         if board.last_move[0] is not None and board.last_move[1] is not None:
             self.create_oval(first_chess_x + box_width * board.last_move[0] - last_move_radius,
-                         first_chess_y + box_height * board.last_move[1] - last_move_radius,
-                         first_chess_x + box_width * board.last_move[0] + last_move_radius,
-                         first_chess_y + box_height * board.last_move[1] + last_move_radius,
-                         fill=last_move_color)
+                             first_chess_y + box_height * board.last_move[1] - last_move_radius,
+                             first_chess_x + box_width * board.last_move[0] + last_move_radius,
+                             first_chess_y + box_height * board.last_move[1] + last_move_radius,
+                             fill=last_move_color)
 
         self.update()
 

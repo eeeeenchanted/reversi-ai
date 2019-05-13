@@ -8,6 +8,9 @@ from chessboard import *
 from config import *
 from rule import *
 
+'''
+实现自博弈的代码，不过最后没有成功
+'''
 
 class Action_auto:
     def __init__(self, start_game):

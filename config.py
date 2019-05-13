@@ -2,12 +2,16 @@
 from enum import Enum
 
 
+# 一些全局变量
+
 class State(Enum):
     human = 1
     AI = 2
     finished = 3
     start = 4
-count=0
+
+
+count = 0
 state = State.start
 human_color = 0
 AI_color = 1
@@ -36,7 +40,7 @@ frame_width = 500
 frame_height = 500
 time_limit = 60
 single_time_limit = 3
-
+# 优先级表
 roxanne_table = [[(0, 0), (0, 7), (7, 0), (7, 7)],
                  [(2, 2), (2, 3), (2, 4), (2, 5), (3, 2), (3, 3), (3, 4), (3, 5),
                   (4, 2), (4, 3), (4, 4), (4, 5), (5, 2), (5, 3), (5, 4), (5, 5)],

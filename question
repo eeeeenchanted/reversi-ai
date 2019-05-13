@@ -1,8 +1,0 @@
-single_time_limit?
-terminal的标准？
-为啥要用kwarg？
-
-*待实现
-计算时间，把时间等信息显示在窗口中，tk.label
-标记当前走子
-

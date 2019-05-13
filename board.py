@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from config import *
-from time import *
 
 
+# 棋盘
 class Board:
     def __init__(self):
         self.mtx = []
@@ -11,6 +11,7 @@ class Board:
             self.mtx.append([])
             for j in range(col):
                 self.mtx[i].append(None)
+        # 初始化4个棋子
         self.mtx[3][3] = white
         self.mtx[4][4] = white
         self.mtx[3][4] = black
@@ -18,6 +19,7 @@ class Board:
         self.cnt = 4
         self.last_move = [None, None]
 
+    # 判断棋盘是否下满
     def is_full(self):
         for i in range(row):
             for j in range(col):
